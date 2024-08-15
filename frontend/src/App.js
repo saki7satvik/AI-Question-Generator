@@ -4,6 +4,9 @@ import axios from 'axios';
 function App() {
   const [company, setCompany] = useState("");
   const [no_of_questions, setNoOfQuestions] = useState('');
+  const [subject, setSubject] = useState('');
+  const [type_of_question, setTypeOfQuestion] = useState('');
+  const [language, setLanguage] = useState('');
   const [response, setResponse] = useState([]);
   const [error, setError] = useState(null);
 
@@ -11,7 +14,7 @@ function App() {
     event.preventDefault();
 
     try {
-      const prompt = { company, no_of_questions };
+      const prompt = { company, no_of_questions, subject, type_of_question, language };
       const res = await axios.post('http://localhost:5000/api/langchain', prompt);
       setResponse(res.data);
     } catch (error) {
@@ -48,6 +51,21 @@ function App() {
           value={no_of_questions} 
           onChange={(e) => setNoOfQuestions(e.target.value)} 
           placeholder='Enter number of questions' 
+        />
+        <input 
+          value={subject} 
+          onChange={(e) => setSubject(e.target.value)} 
+          placeholder='Enter the subject' 
+        />
+        <input 
+          value={type_of_question} 
+          onChange={(e) => setTypeOfQuestion(e.target.value)} 
+          placeholder='Enter type of question' 
+        />
+        <input 
+          value={language} 
+          onChange={(e) => setLanguage(e.target.value)} 
+          placeholder='Enter language (if applicable)' 
         />
         <button type="submit">Submit</button>
       </form>

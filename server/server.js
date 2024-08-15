@@ -3,32 +3,27 @@
 // const mongoose = require('mongoose');
 // const cors = require('cors');
 // const axios = require('axios');
+// const bodyParser = require('body-parser');
 // const { spawn } = require('child_process');
 // require('dotenv').config();
 
 // const app = express();
 // app.use(cors());
 // app.use(express.json());
+// app.use(bodyParser.json());
 
 // const port = 5000;
-// const mongoUri = "mongodb://localhost:27017/"; // Using environment variable for MongoDB URI
+// const mongoUrl = process.env.MONGO_URI || "mongodb://localhost:27017/mydatabase"; // Ensure this is set in your .env
 
 // // MongoDB connection
-// mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
+// mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true })
 //   .then(() => console.log('MongoDB connected'))
 //   .catch((err) => console.error('MongoDB connection error:', err));
 
-// // Check MongoDB connection status
-// mongoose.connection.on('connected', () => {
-//   console.log('Mongoose connected to ' + mongoUri);
-// });
-
-// mongoose.connection.on('error', (err) => {
-//   console.error('Mongoose connection error: ' + err);
-// });
-
-// mongoose.connection.on('disconnected', () => {
-//   console.log('Mongoose disconnected');
+// const db = mongoose.connection;
+// db.on('error', console.error.bind(console, 'connection error'));
+// db.once('open', () => {
+//   console.log('Connected to MongoDB');
 // });
 
 // // Define the Question schema directly in the server file
@@ -41,7 +36,13 @@
 //   answer: String,
 // });
 
+// const dataSchema = new mongoose.Schema({
+//     name: String,
+//     value: Number
+// });
+
 // const Question = mongoose.model('Question', questionSchema);
+// const Data = mongoose.model('Data', dataSchema);
 
 // app.post('/api/get_prompt', (req, res) => {
 //   const prompt = req.body.prompt;
@@ -75,11 +76,11 @@
 // });
 
 // app.post('/api/langchain', (req, res) => {
-//   const { company, no_of_questions } = req.body;
+//   const { company, no_of_questions, subject, type_of_question, language } = req.body;
 
 //   const pythonProcess = spawn('python', [
 //     'D:/ekaushalya/AImcqs/QuestionGenerator.py',
-//     JSON.stringify({ company, no_of_questions }),
+//     JSON.stringify({ company, no_of_questions, subject, type_of_question, language }),
 //   ]);
 
 //   pythonProcess.stdout.on('data', (data) => {
@@ -107,6 +108,19 @@
 //   } catch (error) {
 //     console.error('Error saving questions to MongoDB:', error);
 //     res.status(500).send('Error saving questions to MongoDB');
+//   }
+// });
+
+// // Request to test MongoDB connection
+// app.post('/data', async (req, res) => {
+//   const { name, value } = req.body;
+//   const newData = new Data({ name, value });
+
+//   try {
+//     await newData.save();
+//     res.status(201).send('Data saved to MongoDB');
+//   } catch (error) {
+//     res.status(400).send('Error saving data');
 //   }
 // });
 
